@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050816" />
+  <title>عيد ميلاد روكي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="preloader" id="preloader" aria-live="polite">
+    <div>
+      <p class="kicker">ثواني بس</p>
+      <h2>بحضر الذكريات...</h2>
+      <div class="load-bar"><span id="loadProgress"></span></div>
+      <p id="loadText">0%</p>
+    </div>
+  </div>
+
+  <section class="lock-screen" id="lockScreen" aria-label="شاشة بداية">
+    <div class="lock-phone">
+      <div class="lock-time" id="lockTime">00:00</div>
+      <p>هدية صغيرة لروكي</p>
+      <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="أروى" />
+      <button class="unlock-slider" id="unlockSite" type="button">
+        <span>اسحبي وافتحي الحكاية</span>
+      </button>
+    </div>
+  </section>
+
+  <canvas id="skyCanvas" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="assets/music/love.mp3" type="audio/mpeg" />
+  </audio>
+
+  <aside class="control-dock" aria-label="أدوات الموقع">
+    <button class="icon-btn" id="musicToggle" type="button" aria-label="تشغيل الموسيقى">♪</button>
+    <button class="icon-btn" id="skipIntro" type="button" aria-label="تخطي المقدمة">↧</button>
+  </aside>
+
+  <nav class="chapter-nav" aria-label="مشاهد الحكاية">
+    <a href="#intro" aria-label="البداية" data-roman="I"><span></span></a>
+    <a href="#coffee" aria-label="القهوة" data-roman="II"><span></span></a>
+    <a href="#confession" aria-label="الاعتراف" data-roman="III"><span></span></a>
+    <a href="#gallery" aria-label="الصور" data-roman="IV"><span></span></a>
+    <a href="#videos" aria-label="الفيديوهات" data-roman="V"><span></span></a>
+    <a href="#final-letter" aria-label="الجواب" data-roman="VI"><span></span></a>
+  </nav>
+
+  <button class="hidden-heart heart-one" type="button" data-message="بحب تفاصيلك الصغيرة قبل الكبيرة.">❤</button>
+  <button class="hidden-heart heart-two" type="button" data-message="ضحكتك بتخليني أنسى أي يوم تقيل.">❤</button>
+  <button class="hidden-heart heart-three" type="button" data-message="إنتي أجمل صدفة حصلتلي.">❤</button>
+  <button class="hidden-heart heart-four" type="button" data-message="كل مرة بشوفك بحس إني اختارت صح.">❤</button>
+
+  <main>
+    <section class="scene loader-scene" id="intro">
+      <div class="aurora"></div>
+      <p class="kicker">إلى أروى</p>
+      <h1>كل سنة وإنتي حبيبتي</h1>
+      <p class="intro-copy">عملتلك الحكاية دي عشان كل لحظة حلوة بينا تفضل قدامك، بصوتها وصورها وقلبي اللي كاتب كل كلمة.</p>
+      <button class="primary-btn start-experience" type="button">افتحي هديتي</button>
+    </section>
+
+    <section class="scene movie-scene">
+      <p class="kicker">من زياد إلى روكي</p>
+      <h2>حكايتنا</h2>
+      <div class="film-line"></div>
+      <p>من أول ضحكة في الجامعة، لحد أول قهوة، لحد اليوم اللي قلبي قالها بصراحة.</p>
+    </section>
+
+    <section class="scene envelope-scene" id="letter-opener">
+      <div class="scene-copy">
+        <p class="kicker">أول جواب</p>
+        <h2>جواب قبل كل حاجة</h2>
+        <p>كتبتلك أول كلام من قلبي قبل ما باقي الذكريات تبدأ.</p>
+      </div>
+      <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="فتح جواب روكي">
+        <div class="envelope-back"></div>
+        <div class="letter-peek">
+          <span>To</span>
+          <strong>Rocky ❤</strong>
+        </div>
+        <div class="envelope-front"></div>
+        <div class="wax-seal">R</div>
+      </div>
+      <article class="unfolded-letter" id="firstLetter">
+        <p class="handwriting" data-typewriter="روكي... من قبل ما اليوم يبدأ، أنا كنت عارف إن عيد ميلادك مش مجرد تاريخ. ده اليوم اللي الدنيا قررت فيه يبقى فيها ضحكة هتغير حياتي. كل سنة وإنتي النور اللي بيخليني أصدق إن الحاجات الحلوة ممكن تحصل فجأة، وتفضل للأبد."></p>
+        <a class="primary-btn" href="#birthday">كملي معايا</a>
+      </article>
+    </section>
+
+    <section class="scene hero-scene" id="birthday">
+      <div class="hero-media">
+        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="أروى" />
+      </div>
+      <div class="hero-content">
+        <p class="kicker">22 July 2006</p>
+        <h2>Happy Birthday, Rocky</h2>
+        <p>كل سنة وإنتي أجمل صدفة، أحن قلب، وألطف سبب يخليني أبتسم من غير مقدمات.</p>
+      </div>
+    </section>
+
+    <section class="scene meet-scene">
+      <div class="portrait-stack">
+        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="صورة روكي" />
+        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg" alt="صورة روكي" />
+      </div>
+      <div class="scene-copy">
+        <p class="kicker">أول ما شوفتك</p>
+        <h2>أروى... الهدوء اللي خطف قلبي</h2>
+        <p>أول مرة شوفتك في الجامعة كنتي هادية جدًا، بس ضحكتك كانت واضحة كأنها علامة صغيرة بتقول: هنا في حاجة هتفضل.</p>
+      </div>
+    </section>
+
+    <section class="scene timeline-scene">
+      <p class="kicker">تواريخنا</p>
+      <h2>تواريخ اتكتبت في القلب</h2>
+      <div class="timeline">
+        <article><span>22 July 2006</span><strong>اليوم اللي اتولدت فيه أجمل هدية.</strong></article>
+        <article><span>22 June 2026</span><strong>أول اعتراف، وأول مرة القلب يتكلم بوضوح.</strong></article>
+        <article><span>4 July 2026</span><strong>بقينا رسميًا مع بعض، ومن هنا العداد بدأ.</strong></article>
+      </div>
+    </section>
+
+    <section class="scene story-scene">
+      <div class="story-grid">
+        <article class="glass-panel">
+          <span>01</span>
+          <h3>الجامعة</h3>
+          <p>سنة كاملة عدت من غير كلام، بس الفضول كان بيكبر كل يوم حوالين ضحكتك.</p>
+        </article>
+        <article class="glass-panel">
+          <span>02</span>
+          <h3>الفولو</h3>
+          <p>في تالتة وأنا بدور على أي فرصة، بعتلك فولو على كل مكان، ورديت على كل حاجة.</p>
+        </article>
+        <article class="glass-panel">
+          <span>03</span>
+          <h3>اللابتوب</h3>
+          <p>ستريك صغير بقى فرصة حقيقية. ساعدتك تنزلي حاجة، وكانت بداية القرب اللي كنت مستنيه.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="scene coffee-scene" id="coffee">
+      <figure class="coffee-photo">
+        <img src="assets/images/decor/coffee-heart-steam.jpg" alt="فنجان قهوة ببخار على شكل قلب" />
+        <figcaption>محدش يشرب قهوتك غيري</figcaption>
+      </figure>
+      <div class="scene-copy">
+        <p class="kicker">قهوة روكي</p>
+        <h2>محدش يشرب قهوتك غيري</h2>
+        <p>قلتها هزار، بس الهزار طلع أول سطر في حكاية كبيرة. اتفقنا إنك تعمليلي قهوة مخصوص في الجامعة، ومن يومها بقت القهوة طعمها بداية.</p>
+      </div>
+    </section>
+
+    <section class="scene chat-scene" id="confession">
+      <div class="phone">
+        <div class="phone-top">Rocky ❤</div>
+        <div class="bubble sent">أنا بحب بنت جميلة زي القمر.</div>
+        <div class="bubble received">وإيه علاقتي أنا؟</div>
+        <div class="bubble sent">لازم أعرفك عليها.</div>
+        <div class="bubble sent delayed">هي إنتي يا روكي.</div>
+      </div>
+      <div class="scene-copy">
+        <p class="kicker">أول اعتراف</p>
+        <h2>اليوم اللي القمر بقى له اسم</h2>
+        <p>الاعتراف مكنش جملة وخلاص. كان لحظة كل الكلام اللي اتأجل فيها قرر يظهر.</p>
+      </div>
+    </section>
+
+    <section class="scene gallery-scene" id="gallery">
+      <p class="kicker">صورك في قلبي</p>
+      <h2>صور بتطير كأنها ذكريات</h2>
+      <div class="polaroid-grid">
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3671.JPG.jpeg"><img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="طفولة روكي" /><span>little Rocky</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3672.JPG.jpeg"><img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="طفولة روكي" /><span>baby smile</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3673.JPG.jpeg"><img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="طفولة روكي" /><span>tiny star</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="أروى" /><span>today's glow</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg" alt="أروى" /><span>my favorite</span></button>
+      </div>
+    </section>
+
+    <section class="scene filmstrip-scene">
+      <p class="kicker">شريط ذكريات</p>
+      <h2>صور ماشية بهدوء كأنها فيلمنا</h2>
+      <div class="filmstrip">
+        <div class="filmstrip-track">
+          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" />
+        </div>
+      </div>
+    </section>
+
+    <section class="scene video-scene" id="videos">
+      <div class="scene-copy video-intro">
+        <p class="kicker">فيديوهاتك</p>
+        <h2>كل حركة ليكي بتفضل في قلبي</h2>
+        <p>جمعتلك الفيديوهات دي عشان كل لحظة فيهم عندي غالية: ضحكتك، حضورك، وطريقتك اللي بتخلي أي يوم أحن.</p>
+      </div>
+      <div class="video-wall">
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg"><source src="assets/videos/IMG_3701.MP4" type="video/mp4" /></video></article>
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg"><source src="assets/videos/IMG_3702.MP4" type="video/mp4" /></video></article>
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg"><source src="assets/videos/IMG_3703.MP4" type="video/mp4" /></video></article>
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg"><source src="assets/videos/IMG_3704.MP4" type="video/mp4" /></video></article>
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg"><source src="assets/videos/IMG_3705.MP4" type="video/mp4" /></video></article>
+        <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg"><source src="assets/videos/IMG_3706.MP4" type="video/mp4" /></video></article>
+      </div>
+    </section>
+
+    <section class="scene counter-scene">
+      <p class="kicker">من 4 يوليو 2026</p>
+      <h2>بقالنا قد إيه مع بعض؟</h2>
+      <div class="counter" data-start="2026-07-04T00:00:00+03:00">
+        <div><strong id="days">0</strong><span>يوم</span></div>
+        <div><strong id="hours">0</strong><span>ساعة</span></div>
+        <div><strong id="minutes">0</strong><span>دقيقة</span></div>
+        <div><strong id="seconds">0</strong><span>ثانية</span></div>
+      </div>
+    </section>
+
+    <section class="scene age-scene">
+      <p class="kicker">من 22 يوليو 2006</p>
+      <h2>الدنيا بحالها بتنور بيكي</h2>
+      <div class="age-counter" data-birthday="2006-07-22T00:00:00+03:00">
+        <div><strong id="ageYears">0</strong><span>سنة</span></div>
+        <div><strong id="ageMonths">0</strong><span>شهر</span></div>
+        <div><strong id="ageDays">0</strong><span>يوم</span></div>
+      </div>
+    </section>
+
+    <section class="scene open-letters-scene">
+      <p class="kicker">جوابات صغيرة</p>
+      <h2>افتحي جواب وقت ما قلبك يحتاجه</h2>
+      <div class="letter-cards">
+        <button class="mini-letter" type="button" data-title="لما تفتكريني" data-message="لو افتكرتيني في أي لحظة، اعرفي إنك في بالي أكتر. أنا بحب وجودك في يومي، وبحب إن اسمك لوحده يطمن قلبي.">لما تفتكريني</button>
+        <button class="mini-letter" type="button" data-title="لما تزعلي" data-message="لو زعلتي، نفسي أبقى أول مكان تهربي له. أنا مش عايزك تشيلي حاجة لوحدك. ضحكتك غالية عليا، وراحة قلبك أهم عندي من أي حاجة.">لما تزعلي</button>
+        <button class="mini-letter" type="button" data-title="يوم عيد ميلادك" data-message="كل سنة وإنتي حبيبتي وروحي وأجمل حاجة حصلتلي. يوم ميلادك بالنسبالي مش يوم عادي، ده اليوم اللي الدنيا بقت أحن عشان إنتي فيها.">يوم عيد ميلادك</button>
+      </div>
+    </section>
+
+    <section class="scene reasons-scene">
+      <p class="kicker">بحبك عشان</p>
+      <h2>ليه بحبك؟</h2>
+      <div class="reason-cards">
+        <article><span>❤</span><p>عشان ضحكتك بتغير مود اليوم كله.</p></article>
+        <article><span>✦</span><p>عشان وجودك بيخلي الحاجات العادية تبقى أحن.</p></article>
+        <article><span>☾</span><p>عشان معاكي بقيت أشوف الدنيا بشكل مختلف.</p></article>
+        <article><span>∞</span><p>عشان إنتي الأولى، والأخيرة، والاختيار اللي نفسي يكمل.</p></article>
+      </div>
+    </section>
+
+    <section class="scene final-letter-scene" id="final-letter">
+      <div class="final-gate" id="finalGate">
+        <p class="kicker">آخر حاجة</p>
+        <h2>في كلام لازم يتقال بهدوء</h2>
+        <button class="primary-btn" id="openFinalLetter" type="button">آخر حاجة عايز أقولهالك</button>
+      </div>
+      <article class="final-paper final-paper-hidden" id="finalPaper">
+        <p class="kicker">آخر جواب</p>
+        <h2>روكي...</h2>
+        <p class="handwriting final-type" data-typewriter="أنا بحبك أوي. عمري ما حبيت حد بالطريقة اللي حبيتك بيها. معاكي خالفت كل حاجة كنت فاكر إني مستحيل أغيرها. معاكي حسيت بحلاوة كل حاجة. وجودك خلاني أشوف الدنيا بشكل مختلف. بالنسبة ليا... إنتي الأولى، والأخيرة، والشخص اللي نفسي أكمل حياتي كلها معاه. نفسي أفضل أشوف ضحكتك كل يوم، وأكون سبب في سعادتك. كل سنة وإنتي بخير يا أجمل هدية ربنا رزقني بيها. Happy Birthday ❤"></p>
+      </article>
+    </section>
+
+    <section class="scene promise-scene">
+      <div class="promise-card">
+        <p class="kicker">وعد مني</p>
+        <h2>أوعدك إني أفضل أختارك كل يوم</h2>
+        <p>مش وعد كبير بالكلام، وعد صغير يتكرر كل يوم: أسمعك، أهون عليكي، أفرح لضحكتك، وأفضل شايفك أجمل نصيب في حياتي.</p>
+      </div>
+    </section>
+
+    <section class="scene fireworks-scene" id="forever">
+      <canvas id="fireworksCanvas" aria-hidden="true"></canvas>
+      <p class="kicker">ولسه البداية</p>
+      <h2>I Love You Forever ❤</h2>
+      <p>النهاية هنا بس في الموقع. الحكاية لسه بتبدأ.</p>
+    </section>
+  </main>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button type="button" aria-label="إغلاق">×</button>
+    <img src="" alt="صورة مكبرة" />
+  </div>
+
+  <div class="letter-modal" id="letterModal" aria-hidden="true">
+    <article>
+      <button type="button" aria-label="إغلاق">×</button>
+      <p class="kicker">جواب من قلبي</p>
+      <h3 id="letterModalTitle"></h3>
+      <p id="letterModalMessage"></p>
+    </article>
+  </div>
+
+  <div class="heart-toast" id="heartToast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

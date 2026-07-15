@@ -32,8 +32,14 @@
         <div><strong id="lockAgeSeconds">0</strong><span>ثانية</span></div>
       </div>
       <form class="login-form" id="secretLogin" autocomplete="off">
-        <label for="birthdayPassword">اكتبي كلمة السر</label>
-        <input id="birthdayPassword" type="text" inputmode="numeric" placeholder="22 - 7 - 2006" aria-describedby="lockError" />
+        <label>اكتبي تاريخ الميلاد</label>
+        <div class="password-date" aria-describedby="lockError">
+          <input id="passwordYear" type="text" inputmode="numeric" maxlength="4" placeholder="2006" aria-label="السنة" />
+          <span>-</span>
+          <input id="passwordMonth" type="text" inputmode="numeric" maxlength="2" placeholder="7" aria-label="الشهر" />
+          <span>-</span>
+          <input id="passwordDay" type="text" inputmode="numeric" maxlength="2" placeholder="22" aria-label="اليوم" />
+        </div>
         <p class="lock-error" id="lockError" role="status" aria-live="polite"></p>
         <button class="login-submit" id="unlockSite" type="submit">افتحي الحكاية</button>
       </form>

@@ -207,6 +207,20 @@ main {
   color: rgba(255, 255, 255, 0.42);
 }
 
+.password-date {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) auto minmax(0, 0.72fr) auto minmax(0, 0.85fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.password-date span {
+  color: var(--gold);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+
 .lock-error {
   min-height: 24px;
   color: #ffd68a !important;

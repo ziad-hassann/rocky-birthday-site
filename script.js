@@ -8,7 +8,9 @@ const loadText = qs("#loadText");
 const lockScreen = qs("#lockScreen");
 const unlockSite = qs("#unlockSite");
 const secretLogin = qs("#secretLogin");
-const birthdayPassword = qs("#birthdayPassword");
+const passwordYear = qs("#passwordYear");
+const passwordMonth = qs("#passwordMonth");
+const passwordDay = qs("#passwordDay");
 const lockError = qs("#lockError");
 const lockTime = qs("#lockTime");
 const musicToggle = qs("#musicToggle");
@@ -91,21 +93,22 @@ function preloadAssets() {
 
 window.addEventListener("load", preloadAssets);
 
-function formatBirthdayPassword(value) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-  const day = digits.slice(0, 2);
-  const month = digits.slice(2, 3);
-  const year = digits.slice(3, 7);
-  return [day, month, year].filter(Boolean).join(" - ");
-}
-
-birthdayPassword.addEventListener("input", () => {
-  birthdayPassword.value = formatBirthdayPassword(birthdayPassword.value);
+qsa(".password-date input").forEach((input, index, inputs) => {
+  input.addEventListener("input", () => {
+    input.value = input.value.replace(/\D/g, "");
+    if (input.value.length >= input.maxLength && inputs[index + 1]) {
+      inputs[index + 1].focus();
+    }
+  });
 });
 
 secretLogin.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (birthdayPassword.value.replace(/\D/g, "") === "2272006") {
+  const year = passwordYear.value.trim();
+  const month = passwordMonth.value.trim();
+  const day = passwordDay.value.trim();
+
+  if (year === "2006" && month === "7" && day === "22") {
     lockScreen.classList.add("hide");
     document.body.classList.remove("locked");
     lockError.textContent = "";
@@ -113,8 +116,10 @@ secretLogin.addEventListener("submit", (event) => {
   }
 
   lockError.textContent = "كلمة السر مش صح";
-  birthdayPassword.value = "";
-  birthdayPassword.focus();
+  passwordYear.value = "";
+  passwordMonth.value = "";
+  passwordDay.value = "";
+  passwordYear.focus();
   secretLogin.classList.remove("shake");
   void secretLogin.offsetWidth;
   secretLogin.classList.add("shake");

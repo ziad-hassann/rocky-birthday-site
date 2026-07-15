@@ -25,9 +25,18 @@
       <div class="lock-time" id="lockTime">00:00</div>
       <p>هدية صغيرة لروكي</p>
       <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="أروى" />
-      <button class="unlock-slider" id="unlockSite" type="button">
-        <span>اسحبي وافتحي الحكاية</span>
-      </button>
+      <div class="lock-age-counter" data-birthday="2006-07-22T00:00:00+03:00" aria-label="عداد عمر روكي">
+        <div><strong id="lockAgeYears">0</strong><span>سنة</span></div>
+        <div><strong id="lockAgeMonths">0</strong><span>شهر</span></div>
+        <div><strong id="lockAgeDays">0</strong><span>يوم</span></div>
+        <div><strong id="lockAgeSeconds">0</strong><span>ثانية</span></div>
+      </div>
+      <form class="login-form" id="secretLogin" autocomplete="off">
+        <label for="birthdayPassword">اكتبي كلمة السر</label>
+        <input id="birthdayPassword" type="password" inputmode="numeric" placeholder="YYYY-M-D" aria-describedby="lockError" />
+        <p class="lock-error" id="lockError" role="status" aria-live="polite"></p>
+        <button class="login-submit" id="unlockSite" type="submit">افتحي الحكاية</button>
+      </form>
     </div>
   </section>
 
@@ -242,6 +251,7 @@
         <div><strong id="ageYears">0</strong><span>سنة</span></div>
         <div><strong id="ageMonths">0</strong><span>شهر</span></div>
         <div><strong id="ageDays">0</strong><span>يوم</span></div>
+        <div><strong id="ageSeconds">0</strong><span>ثانية</span></div>
       </div>
     </section>
 

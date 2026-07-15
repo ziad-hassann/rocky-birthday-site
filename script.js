@@ -7,6 +7,9 @@ const loadProgress = qs("#loadProgress");
 const loadText = qs("#loadText");
 const lockScreen = qs("#lockScreen");
 const unlockSite = qs("#unlockSite");
+const secretLogin = qs("#secretLogin");
+const birthdayPassword = qs("#birthdayPassword");
+const lockError = qs("#lockError");
 const lockTime = qs("#lockTime");
 const musicToggle = qs("#musicToggle");
 const skipIntro = qs("#skipIntro");
@@ -88,9 +91,21 @@ function preloadAssets() {
 
 window.addEventListener("load", preloadAssets);
 
-unlockSite.addEventListener("click", () => {
-  lockScreen.classList.add("hide");
-  document.body.classList.remove("locked");
+secretLogin.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (birthdayPassword.value.trim() === "2006-7-22") {
+    lockScreen.classList.add("hide");
+    document.body.classList.remove("locked");
+    lockError.textContent = "";
+    return;
+  }
+
+  lockError.textContent = "كلمة السر مش صح";
+  birthdayPassword.value = "";
+  birthdayPassword.focus();
+  secretLogin.classList.remove("shake");
+  void secretLogin.offsetWidth;
+  secretLogin.classList.add("shake");
 });
 
 function startExperience() {
@@ -294,6 +309,7 @@ function updateAgeMoment() {
   let years = now.getFullYear() - birthday.getFullYear();
   let months = now.getMonth() - birthday.getMonth();
   let days = now.getDate() - birthday.getDate();
+  const seconds = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
 
   if (days < 0) {
     months -= 1;
@@ -309,10 +325,16 @@ function updateAgeMoment() {
   qs("#ageYears").textContent = Math.max(0, years);
   qs("#ageMonths").textContent = Math.max(0, months);
   qs("#ageDays").textContent = Math.max(0, days);
+  qs("#ageSeconds").textContent = seconds.toLocaleString("ar-EG");
+
+  qs("#lockAgeYears").textContent = Math.max(0, years);
+  qs("#lockAgeMonths").textContent = Math.max(0, months);
+  qs("#lockAgeDays").textContent = Math.max(0, days);
+  qs("#lockAgeSeconds").textContent = seconds.toLocaleString("ar-EG");
 }
 
 updateAgeMoment();
-window.setInterval(updateAgeMoment, 60 * 60 * 1000);
+window.setInterval(updateAgeMoment, 1000);
 
 const chapterObserver = new IntersectionObserver((entries) => {
   const visible = entries

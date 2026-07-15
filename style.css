@@ -126,10 +126,40 @@ main {
 
 .lock-phone img {
   width: 100%;
-  height: min(430px, 52vh);
+  height: min(330px, 38vh);
   object-fit: cover;
   border-radius: 22px;
   box-shadow: var(--shadow);
+}
+
+.lock-age-counter {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.lock-age-counter div {
+  min-width: 0;
+  padding: 10px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lock-age-counter strong,
+.lock-age-counter span {
+  display: block;
+}
+
+.lock-age-counter strong {
+  font-size: clamp(18px, 5vw, 25px);
+  line-height: 1.1;
+}
+
+.lock-age-counter span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .unlock-slider {
@@ -142,6 +172,64 @@ main {
   background: rgba(255, 255, 255, 0.12);
   cursor: pointer;
   overflow: hidden;
+}
+
+.login-form {
+  display: grid;
+  gap: 10px;
+}
+
+.login-form label {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 800;
+}
+
+.login-form input {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  outline: none;
+  padding: 0 16px;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+  font: 800 20px "Cairo", system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+.login-form input:focus {
+  border-color: rgba(255, 214, 138, 0.85);
+  box-shadow: 0 0 0 4px rgba(255, 214, 138, 0.12);
+}
+
+.login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.lock-error {
+  min-height: 24px;
+  color: #ffd68a !important;
+  font-size: 14px;
+}
+
+.login-form.shake {
+  animation: loginShake 360ms ease;
+}
+
+.login-submit {
+  min-height: 56px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 18px;
+  color: white;
+  background: linear-gradient(135deg, var(--pink), var(--violet));
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow: 0 16px 34px rgba(255, 94, 168, 0.22);
+}
+
+.login-submit:active {
+  transform: translateY(1px);
 }
 
 .unlock-slider::before {
@@ -1384,6 +1472,13 @@ video {
 @keyframes unlockPulse {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(-8px); }
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(8px); }
+  50% { transform: translateX(-8px); }
+  75% { transform: translateX(5px); }
 }
 
 @keyframes dramaticLetter {

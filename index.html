@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260715-login-2" />
+  <link rel="stylesheet" href="style.css?v=20260715-login-3" />
 </head>
 <body>
   <div class="preloader" id="preloader" aria-live="polite">
@@ -36,11 +36,11 @@
       </div>
       <form class="login-form" id="secretLogin" autocomplete="off">
         <div class="password-date" aria-describedby="lockError">
-          <input id="passwordYear" type="text" inputmode="numeric" maxlength="4" aria-label="السنة" />
+          <input id="passwordYear" name="rocky-year" type="password" inputmode="numeric" maxlength="4" autocomplete="new-password" aria-label="السنة" />
           <span>-</span>
-          <input id="passwordMonth" type="text" inputmode="numeric" maxlength="2" aria-label="الشهر" />
+          <input id="passwordMonth" name="rocky-month" type="password" inputmode="numeric" maxlength="2" autocomplete="new-password" aria-label="الشهر" />
           <span>-</span>
-          <input id="passwordDay" type="text" inputmode="numeric" maxlength="2" aria-label="اليوم" />
+          <input id="passwordDay" name="rocky-day" type="password" inputmode="numeric" maxlength="2" autocomplete="new-password" aria-label="اليوم" />
         </div>
         <p class="lock-error" id="lockError" role="status" aria-live="polite"></p>
         <button class="login-submit" id="unlockSite" type="submit">افتحي الحكاية</button>
@@ -329,6 +329,6 @@
 
   <div class="heart-toast" id="heartToast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=20260715-login-2"></script>
+  <script src="script.js?v=20260715-login-3"></script>
 </body>
 </html>

@@ -31,6 +31,7 @@ const finalGate = qs("#finalGate");
 const finalPaper = qs("#finalPaper");
 const openFinalLetter = qs("#openFinalLetter");
 const heartToast = qs("#heartToast");
+const passwordInputs = qsa(".password-date input");
 
 let started = false;
 let typewriterQueue = new WeakSet();
@@ -93,7 +94,16 @@ function preloadAssets() {
 
 window.addEventListener("load", preloadAssets);
 
-qsa(".password-date input").forEach((input, index, inputs) => {
+function clearSavedPasswordFields() {
+  passwordInputs.forEach((input) => {
+    input.value = "";
+  });
+}
+
+clearSavedPasswordFields();
+window.addEventListener("pageshow", clearSavedPasswordFields);
+
+passwordInputs.forEach((input, index, inputs) => {
   input.addEventListener("input", () => {
     input.value = input.value.replace(/\D/g, "");
     if (input.value.length >= input.maxLength && inputs[index + 1]) {

@@ -4,11 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050816" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>عيد ميلاد روكي</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20260715-login-2" />
 </head>
 <body>
   <div class="preloader" id="preloader" aria-live="polite">
@@ -32,13 +35,12 @@
         <div><strong id="lockAgeSeconds">0</strong><span>ثانية</span></div>
       </div>
       <form class="login-form" id="secretLogin" autocomplete="off">
-        <label>اكتبي تاريخ الميلاد</label>
         <div class="password-date" aria-describedby="lockError">
-          <input id="passwordYear" type="text" inputmode="numeric" maxlength="4" placeholder="2006" aria-label="السنة" />
+          <input id="passwordYear" type="text" inputmode="numeric" maxlength="4" aria-label="السنة" />
           <span>-</span>
-          <input id="passwordMonth" type="text" inputmode="numeric" maxlength="2" placeholder="7" aria-label="الشهر" />
+          <input id="passwordMonth" type="text" inputmode="numeric" maxlength="2" aria-label="الشهر" />
           <span>-</span>
-          <input id="passwordDay" type="text" inputmode="numeric" maxlength="2" placeholder="22" aria-label="اليوم" />
+          <input id="passwordDay" type="text" inputmode="numeric" maxlength="2" aria-label="اليوم" />
         </div>
         <p class="lock-error" id="lockError" role="status" aria-live="polite"></p>
         <button class="login-submit" id="unlockSite" type="submit">افتحي الحكاية</button>
@@ -327,6 +329,6 @@
 
   <div class="heart-toast" id="heartToast" role="status" aria-live="polite"></div>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=20260715-login-2"></script>
 </body>
 </html>

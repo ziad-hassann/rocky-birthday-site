@@ -91,9 +91,21 @@ function preloadAssets() {
 
 window.addEventListener("load", preloadAssets);
 
+function formatBirthdayPassword(value) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
+  const day = digits.slice(0, 2);
+  const month = digits.slice(2, 3);
+  const year = digits.slice(3, 7);
+  return [day, month, year].filter(Boolean).join(" - ");
+}
+
+birthdayPassword.addEventListener("input", () => {
+  birthdayPassword.value = formatBirthdayPassword(birthdayPassword.value);
+});
+
 secretLogin.addEventListener("submit", (event) => {
   event.preventDefault();
-  if (birthdayPassword.value.trim() === "2006-7-22") {
+  if (birthdayPassword.value.replace(/\D/g, "") === "2272006") {
     lockScreen.classList.add("hide");
     document.body.classList.remove("locked");
     lockError.textContent = "";

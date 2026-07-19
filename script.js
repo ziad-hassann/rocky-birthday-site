@@ -14,6 +14,7 @@ const passwordDay = qs("#passwordDay");
 const lockError = qs("#lockError");
 const lockTime = qs("#lockTime");
 const musicToggle = qs("#musicToggle");
+const cinematicToggle = qs("#cinematicToggle");
 const skipIntro = qs("#skipIntro");
 const progressBar = qs(".scroll-progress span");
 const cursorGlow = qs(".cursor-glow");
@@ -32,11 +33,32 @@ const finalPaper = qs("#finalPaper");
 const openFinalLetter = qs("#openFinalLetter");
 const heartToast = qs("#heartToast");
 const passwordInputs = qsa(".password-date input");
+const memoryForm = qs("#memoryForm");
+const memoryImage = qs("#memoryImage");
+const memoryTitle = qs("#memoryTitle");
+const memoryNote = qs("#memoryNote");
+const memoryPreview = qs("#memoryPreview");
+const memoryCardTitle = qs("#memoryCardTitle");
+const memoryCardNote = qs("#memoryCardNote");
+const clearMemory = qs("#clearMemory");
+const memoryWall = qs("#memoryWall");
 
 let started = false;
+let userPausedMusic = false;
 let typewriterQueue = new WeakSet();
 let navSleepTimer;
 let heartToastTimer;
+let selectedMemoryImage = "";
+let savedMemories = [];
+let cinematicTimer;
+let cinematicIndex = 0;
+let cinematicRunning = false;
+
+const fullMusicVolume = 1;
+const videoMusicVolume = 0.18;
+let musicResumeTimer;
+const savedMemoryKey = "rockySavedMemories";
+const oldSavedMemoryKey = "rockySavedMemory";
 
 document.body.classList.add("locked");
 
@@ -53,8 +75,7 @@ window.setInterval(updateLockTime, 30000);
 
 function preloadAssets() {
   const media = [
-    ...qsa("img").map((item) => item.currentSrc || item.src),
-    ...qsa("video source").map((item) => item.src),
+    ...qsa(".lock-phone img, .hero-media img").map((item) => item.currentSrc || item.src),
     music.currentSrc || qs("source", music)?.src
   ].filter(Boolean);
 
@@ -93,6 +114,54 @@ function preloadAssets() {
 }
 
 window.addEventListener("load", preloadAssets);
+
+function setupLazyMedia() {
+  qsa("img").forEach((img, index) => {
+    img.decoding = "async";
+    if (index > 1 && !img.closest(".lock-phone, .hero-media")) {
+      img.loading = "lazy";
+    }
+  });
+
+  const lazyVideos = qsa("video");
+  lazyVideos.forEach((video) => {
+    video.preload = "none";
+    qsa("source", video).forEach((source) => {
+      source.dataset.src = source.src;
+      source.removeAttribute("src");
+    });
+  });
+
+  const loadVideo = (video) => {
+    if (video.dataset.loaded === "true") return;
+    qsa("source", video).forEach((source) => {
+      if (source.dataset.src) source.src = source.dataset.src;
+    });
+    video.load();
+    video.dataset.loaded = "true";
+  };
+
+  lazyVideos.forEach((video) => {
+    video.addEventListener("pointerdown", () => loadVideo(video), { once: true });
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    lazyVideos.forEach(loadVideo);
+    return;
+  }
+
+  const lazyVideoObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      loadVideo(entry.target);
+      lazyVideoObserver.unobserve(entry.target);
+    });
+  }, { rootMargin: "650px 0px" });
+
+  lazyVideos.forEach((video) => lazyVideoObserver.observe(video));
+}
+
+setupLazyMedia();
 
 function clearSavedPasswordFields() {
   passwordInputs.forEach((input) => {
@@ -135,9 +204,20 @@ secretLogin.addEventListener("submit", (event) => {
   secretLogin.classList.add("shake");
 });
 
+function hasPlayingVideo() {
+  return qsa("video").some((item) => !item.paused && !item.ended);
+}
+
+function playMusicSoftlyIfNeeded() {
+  if (userPausedMusic || !started) return;
+  music.volume = hasPlayingVideo() ? videoMusicVolume : fullMusicVolume;
+  music.play().catch(() => {});
+}
+
 function startExperience() {
-  if (started) return;
   started = true;
+  userPausedMusic = false;
+  music.volume = hasPlayingVideo() ? videoMusicVolume : fullMusicVolume;
   music.play().then(() => {
     musicToggle.textContent = "Ⅱ";
     musicToggle.setAttribute("aria-label", "إيقاف الموسيقى");
@@ -155,13 +235,61 @@ musicToggle.addEventListener("click", () => {
   if (music.paused) {
     startExperience();
   } else {
+    userPausedMusic = true;
     music.pause();
     musicToggle.textContent = "♪";
     musicToggle.setAttribute("aria-label", "تشغيل الموسيقى");
   }
 });
 
+function stopCinematicMode() {
+  cinematicRunning = false;
+  window.clearTimeout(cinematicTimer);
+  cinematicToggle.textContent = "▶";
+  cinematicToggle.setAttribute("aria-label", "تشغيل العرض السينمائي");
+  document.body.classList.remove("cinematic-mode");
+}
+
+function stepCinematicMode() {
+  if (!cinematicRunning) return;
+
+  const scenes = qsa("main > .scene");
+  if (!scenes.length) return;
+
+  const scene = scenes[cinematicIndex % scenes.length];
+  scene.scrollIntoView({ behavior: "smooth", block: "start" });
+  cinematicIndex += 1;
+
+  const delay = scene.matches(".video-scene, .memory-scene, .final-letter-scene") ? 7200 : 5200;
+  cinematicTimer = window.setTimeout(stepCinematicMode, delay);
+}
+
+function startCinematicMode() {
+  startExperience();
+  document.body.classList.add("cinematic-mode");
+  cinematicToggle.textContent = "■";
+  cinematicToggle.setAttribute("aria-label", "إيقاف العرض السينمائي");
+  cinematicRunning = true;
+
+  const scenes = qsa("main > .scene");
+  const currentScene = scenes.findIndex((scene) => {
+    const rect = scene.getBoundingClientRect();
+    return rect.top <= window.innerHeight * 0.45 && rect.bottom >= window.innerHeight * 0.45;
+  });
+  cinematicIndex = Math.max(0, currentScene);
+  stepCinematicMode();
+}
+
+cinematicToggle.addEventListener("click", () => {
+  if (cinematicRunning) {
+    stopCinematicMode();
+    return;
+  }
+  startCinematicMode();
+});
+
 skipIntro.addEventListener("click", () => {
+  stopCinematicMode();
   qs("#birthday").scrollIntoView({ behavior: "smooth" });
 });
 
@@ -238,24 +366,49 @@ qsa(".polaroid").forEach((button) => {
     button.style.transform = "";
   });
 
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
+    createTapSparkles(event);
     lightboxImg.src = button.dataset.full;
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
   });
 });
 
+qsa(".filmstrip img, .memory-card").forEach((item) => {
+  item.addEventListener("click", createTapSparkles);
+});
+
 qsa("video").forEach((video) => {
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+
+  video.addEventListener("click", createTapSparkles);
+
   video.addEventListener("play", () => {
     qsa("video").forEach((otherVideo) => {
       if (otherVideo !== video) otherVideo.pause();
     });
-    if (!music.paused) music.volume = 0.18;
+    if (!userPausedMusic && started) {
+      music.volume = videoMusicVolume;
+      playMusicSoftlyIfNeeded();
+      window.clearTimeout(musicResumeTimer);
+      musicResumeTimer = window.setTimeout(playMusicSoftlyIfNeeded, 250);
+    }
   });
 
   video.addEventListener("pause", () => {
-    if (!qsa("video").some((item) => !item.paused)) music.volume = 1;
+    if (!hasPlayingVideo()) music.volume = fullMusicVolume;
   });
+
+  video.addEventListener("ended", () => {
+    if (!hasPlayingVideo()) music.volume = fullMusicVolume;
+  });
+});
+
+music.addEventListener("pause", () => {
+  if (userPausedMusic || !started || !hasPlayingVideo()) return;
+  window.clearTimeout(musicResumeTimer);
+  musicResumeTimer = window.setTimeout(playMusicSoftlyIfNeeded, 120);
 });
 
 qsa(".mini-letter").forEach((letter) => {
@@ -298,6 +451,7 @@ lightbox.addEventListener("click", (event) => {
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closeLightbox();
   if (event.key === "Escape") closeLetterModal();
+  if (event.key === "Escape") stopCinematicMode();
 });
 
 function closeLightbox() {
@@ -310,6 +464,273 @@ function closeLetterModal() {
   letterModal.classList.remove("open");
   letterModal.setAttribute("aria-hidden", "true");
 }
+
+function createTapSparkles(event) {
+  const symbols = ["❤", "✦", "★", "♡"];
+  const colors = ["#ffd68a", "#ff5ea8", "#55c7ff", "#ffffff"];
+
+  for (let i = 0; i < 12; i += 1) {
+    const sparkle = document.createElement("span");
+    const angle = (Math.PI * 2 * i) / 12;
+    const distance = 42 + Math.random() * 58;
+    sparkle.className = "tap-sparkle";
+    sparkle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    sparkle.style.left = `${event.clientX}px`;
+    sparkle.style.top = `${event.clientY}px`;
+    sparkle.style.setProperty("--spark-x", `${Math.cos(angle) * distance}px`);
+    sparkle.style.setProperty("--spark-y", `${Math.sin(angle) * distance}px`);
+    sparkle.style.setProperty("--spark-rotate", `${Math.random() * 160 - 80}deg`);
+    sparkle.style.setProperty("--spark-size", `${15 + Math.random() * 14}px`);
+    sparkle.style.setProperty("--spark-color", colors[Math.floor(Math.random() * colors.length)]);
+    document.body.appendChild(sparkle);
+    sparkle.addEventListener("animationend", () => sparkle.remove(), { once: true });
+  }
+}
+
+function showToast(message) {
+  heartToast.textContent = message;
+  heartToast.classList.add("show");
+  window.clearTimeout(heartToastTimer);
+  heartToastTimer = window.setTimeout(() => heartToast.classList.remove("show"), 2600);
+}
+
+function updateMemoryCard(memory = {}) {
+  selectedMemoryImage = memory.image || selectedMemoryImage;
+  if (memory.image) memoryPreview.src = memory.image;
+  memoryCardTitle.textContent = memory.title || "ذكرى مستنية صورتك";
+  memoryCardNote.textContent = memory.note || "ارفعي صورة واكتبي كلمة، وبعدها ضيفيها لحائط الذكريات.";
+}
+
+function readImageAsCard(file, maxSize = 1100, quality = 0.76) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = reject;
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function saveMemories() {
+  localStorage.setItem(savedMemoryKey, JSON.stringify(savedMemories));
+}
+
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+  const words = text.split(/\s+/).filter(Boolean);
+  let line = "";
+  let lines = 0;
+
+  words.forEach((word) => {
+    const testLine = line ? `${line} ${word}` : word;
+    if (ctx.measureText(testLine).width > maxWidth && line) {
+      if (lines < maxLines) ctx.fillText(line, x, y + lines * lineHeight);
+      line = word;
+      lines += 1;
+      return;
+    }
+    line = testLine;
+  });
+
+  if (line && lines < maxLines) ctx.fillText(line, x, y + lines * lineHeight);
+}
+
+function downloadMemoryCard(memory) {
+  const canvas = document.createElement("canvas");
+  const width = 1080;
+  const height = 1500;
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+
+  img.onload = () => {
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, "#130617");
+    gradient.addColorStop(0.55, "#202043");
+    gradient.addColorStop(1, "#3b1726");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    drawRoundedRect(ctx, 70, 70, 940, 1040, 34);
+    ctx.clip();
+    const scale = Math.max(940 / img.width, 1040 / img.height);
+    const drawWidth = img.width * scale;
+    const drawHeight = img.height * scale;
+    ctx.drawImage(img, 70 + (940 - drawWidth) / 2, 70 + (1040 - drawHeight) / 2, drawWidth, drawHeight);
+    ctx.restore();
+
+    const fade = ctx.createLinearGradient(0, 780, 0, 1110);
+    fade.addColorStop(0, "rgba(5, 8, 22, 0)");
+    fade.addColorStop(1, "rgba(5, 8, 22, 0.86)");
+    ctx.fillStyle = fade;
+    ctx.fillRect(70, 780, 940, 330);
+
+    ctx.fillStyle = "#ffd68a";
+    ctx.font = "42px Cairo, Tahoma, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Rocky memory", width / 2, 1198);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 72px Cairo, Tahoma, sans-serif";
+    drawWrappedText(ctx, memory.title || "ذكرى محفوظة", width / 2, 1288, 850, 82, 2);
+
+    ctx.fillStyle = "rgba(255, 248, 255, 0.82)";
+    ctx.font = "38px Cairo, Tahoma, sans-serif";
+    drawWrappedText(ctx, memory.note || "لحظة حلوة اتضافت للموقع.", width / 2, 1402, 820, 50, 2);
+
+    const link = document.createElement("a");
+    link.download = `${(memory.title || "rocky-memory").replace(/[^\w\u0600-\u06FF-]+/g, "-")}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
+  img.src = memory.image;
+}
+
+function renderMemoryWall() {
+  memoryWall.innerHTML = "";
+
+  if (!savedMemories.length) {
+    const empty = document.createElement("p");
+    empty.className = "memory-empty";
+    empty.textContent = "لسه مفيش ذكريات محفوظة. أول صورة هتبدأ الحائط.";
+    memoryWall.appendChild(empty);
+    return;
+  }
+
+  savedMemories.forEach((memory, index) => {
+    const card = document.createElement("article");
+    card.className = "wall-memory";
+    card.innerHTML = `
+      <img src="${memory.image}" alt="">
+      <div>
+        <span>${new Date(memory.createdAt).toLocaleDateString("ar-EG")}</span>
+        <h4></h4>
+        <p></p>
+        <div class="wall-actions">
+          <button type="button" data-action="download">تحميل الكارت</button>
+          <button type="button" data-action="delete">حذف</button>
+        </div>
+      </div>
+    `;
+    qs("h4", card).textContent = memory.title;
+    qs("p", card).textContent = memory.note;
+    card.addEventListener("click", createTapSparkles);
+    qs('[data-action="download"]', card).addEventListener("click", (event) => {
+      event.stopPropagation();
+      downloadMemoryCard(memory);
+    });
+    qs('[data-action="delete"]', card).addEventListener("click", (event) => {
+      event.stopPropagation();
+      savedMemories.splice(index, 1);
+      saveMemories();
+      renderMemoryWall();
+      showToast("اتحذفت الذكرى");
+    });
+    memoryWall.appendChild(card);
+  });
+}
+
+function loadSavedMemory() {
+  try {
+    const savedList = JSON.parse(localStorage.getItem(savedMemoryKey) || "[]");
+    const oldMemory = JSON.parse(localStorage.getItem(oldSavedMemoryKey) || "null");
+    savedMemories = Array.isArray(savedList) ? savedList : [];
+    if (!savedMemories.length && oldMemory?.image) {
+      savedMemories = [{ ...oldMemory, createdAt: Date.now() }];
+      saveMemories();
+      localStorage.removeItem(oldSavedMemoryKey);
+    }
+    if (savedMemories[0]) updateMemoryCard(savedMemories[0]);
+    renderMemoryWall();
+  } catch (error) {
+    localStorage.removeItem(savedMemoryKey);
+    renderMemoryWall();
+  }
+}
+
+memoryImage.addEventListener("change", () => {
+  const file = memoryImage.files?.[0];
+  if (!file) return;
+
+  readImageAsCard(file).then((image) => {
+    selectedMemoryImage = image;
+    memoryPreview.src = image;
+    updateMemoryCard({
+      image,
+      title: memoryTitle.value.trim() || "ذكرى جديدة",
+      note: memoryNote.value.trim() || "لسه متضافة حالا."
+    });
+  }).catch(() => {
+    memoryCardNote.textContent = "الصورة دي مش نافعة، جربي صورة تانية.";
+  });
+});
+
+memoryForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const memory = {
+    image: selectedMemoryImage || memoryPreview.src,
+    title: memoryTitle.value.trim() || "ذكرى محفوظة",
+    note: memoryNote.value.trim() || "لحظة حلوة اتضافت للموقع.",
+    createdAt: Date.now()
+  };
+
+  try {
+    savedMemories.unshift(memory);
+    savedMemories = savedMemories.slice(0, 12);
+    saveMemories();
+    updateMemoryCard(memory);
+    renderMemoryWall();
+    memoryForm.reset();
+    showToast("اتضافت لحائط الذكريات");
+  } catch (error) {
+    savedMemories.shift();
+    memoryCardNote.textContent = "المساحة مش مكفية، جربي صورة أصغر.";
+  }
+});
+
+clearMemory.addEventListener("click", () => {
+  localStorage.removeItem(savedMemoryKey);
+  savedMemories = [];
+  selectedMemoryImage = "";
+  memoryForm.reset();
+  updateMemoryCard({
+    image: "assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg",
+    title: "ذكرى مستنية صورتك",
+    note: "ارفعي صورة واضغطي حفظ، وهتفضل موجودة هنا كل مرة تفتحي الموقع من نفس الجهاز."
+  });
+  renderMemoryWall();
+});
+
+loadSavedMemory();
 
 function updateCounter() {
   const start = new Date(qs(".counter").dataset.start).getTime();

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260715-login-3" />
+  <link rel="stylesheet" href="style.css?v=20260719-pro-1" />
 </head>
 <body>
   <div class="preloader" id="preloader" aria-live="polite">
@@ -58,6 +58,7 @@
 
   <aside class="control-dock" aria-label="أدوات الموقع">
     <button class="icon-btn" id="musicToggle" type="button" aria-label="تشغيل الموسيقى">♪</button>
+    <button class="icon-btn" id="cinematicToggle" type="button" aria-label="تشغيل العرض السينمائي">▶</button>
     <button class="icon-btn" id="skipIntro" type="button" aria-label="تخطي المقدمة">↧</button>
   </aside>
 
@@ -125,8 +126,8 @@
 
     <section class="scene meet-scene">
       <div class="portrait-stack">
-        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="صورة روكي" />
-        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg" alt="صورة روكي" />
+        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="صورة روكي" loading="lazy" decoding="async" />
+        <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg" alt="صورة روكي" loading="lazy" decoding="async" />
       </div>
       <div class="scene-copy">
         <p class="kicker">أول ما شوفتك</p>
@@ -167,7 +168,7 @@
 
     <section class="scene coffee-scene" id="coffee">
       <figure class="coffee-photo">
-        <img src="assets/images/decor/coffee-heart-steam.jpg" alt="فنجان قهوة ببخار على شكل قلب" />
+        <img src="assets/images/decor/coffee-heart-steam.jpg" alt="فنجان قهوة ببخار على شكل قلب" loading="lazy" decoding="async" />
         <figcaption>محدش يشرب قهوتك غيري</figcaption>
       </figure>
       <div class="scene-copy">
@@ -196,11 +197,11 @@
       <p class="kicker">صورك في قلبي</p>
       <h2>صور بتطير كأنها ذكريات</h2>
       <div class="polaroid-grid">
-        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3671.JPG.jpeg"><img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="طفولة روكي" /><span>little Rocky</span></button>
-        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3672.JPG.jpeg"><img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="طفولة روكي" /><span>baby smile</span></button>
-        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3673.JPG.jpeg"><img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="طفولة روكي" /><span>tiny star</span></button>
-        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="أروى" /><span>today's glow</span></button>
-        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg" alt="أروى" /><span>my favorite</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3671.JPG.jpeg"><img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="طفولة روكي" loading="lazy" decoding="async" /><span>little Rocky</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3672.JPG.jpeg"><img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="طفولة روكي" loading="lazy" decoding="async" /><span>baby smile</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/childhood/IMG_3673.JPG.jpeg"><img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="طفولة روكي" loading="lazy" decoding="async" /><span>tiny star</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="أروى" loading="lazy" decoding="async" /><span>today's glow</span></button>
+        <button class="polaroid" type="button" data-full="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg"><img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg" alt="أروى" loading="lazy" decoding="async" /><span>my favorite</span></button>
       </div>
     </section>
 
@@ -209,18 +210,18 @@
       <h2>صور ماشية بهدوء كأنها فيلمنا</h2>
       <div class="filmstrip">
         <div class="filmstrip-track">
-          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" />
-          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" />
+          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/childhood/IMG_3671.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/childhood/IMG_3672.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/childhood/IMG_3673.JPG.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
+          <img src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg" alt="ذكرى روكي" loading="lazy" decoding="async" />
         </div>
       </div>
     </section>
@@ -238,6 +239,47 @@
         <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM (1).jpeg"><source src="assets/videos/IMG_3704.MP4" type="video/mp4" /></video></article>
         <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (1).jpeg"><source src="assets/videos/IMG_3705.MP4" type="video/mp4" /></video></article>
         <article class="video-card"><video controls playsinline preload="metadata" poster="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.18 PM (2).jpeg"><source src="assets/videos/IMG_3706.MP4" type="video/mp4" /></video></article>
+      </div>
+    </section>
+
+    <section class="scene memory-scene" id="memory-save">
+      <div class="scene-copy memory-copy">
+        <p class="kicker">ذكرى جديدة</p>
+        <h2>ارفعي صورة تتحفظ هنا</h2>
+        <p>اختاري صورة حلوة، اكتبي عليها كلمة صغيرة، واحفظيها ككارت جوه الموقع.</p>
+      </div>
+      <div class="memory-studio">
+        <form class="memory-form" id="memoryForm">
+          <label class="upload-drop" for="memoryImage">
+            <span>+</span>
+            <strong>اختاري صورة</strong>
+            <small>JPG أو PNG</small>
+          </label>
+          <input id="memoryImage" type="file" accept="image/*" />
+          <input id="memoryTitle" type="text" maxlength="34" placeholder="اسم الذكرى" />
+          <textarea id="memoryNote" maxlength="120" placeholder="كلمة صغيرة عليها"></textarea>
+          <div class="memory-actions">
+            <button class="primary-btn" type="submit">إضافة للحائط</button>
+            <button class="ghost-btn" id="clearMemory" type="button">مسح الكل</button>
+          </div>
+        </form>
+        <article class="memory-card" id="memoryCard">
+          <div class="memory-photo">
+            <img id="memoryPreview" src="assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg" alt="ذكرى محفوظة" loading="lazy" decoding="async" />
+          </div>
+          <div class="memory-caption">
+            <span>Rocky memory</span>
+            <h3 id="memoryCardTitle">ذكرى مستنية صورتك</h3>
+            <p id="memoryCardNote">ارفعي صورة واضغطي حفظ، وهتفضل موجودة هنا كل مرة تفتحي الموقع من نفس الجهاز.</p>
+          </div>
+        </article>
+      </div>
+      <div class="memory-wall-wrap">
+        <div class="memory-wall-head">
+          <p class="kicker">Memory Wall</p>
+          <h3>حائط الذكريات المحفوظة</h3>
+        </div>
+        <div class="memory-wall" id="memoryWall" aria-live="polite"></div>
       </div>
     </section>
 
@@ -315,7 +357,7 @@
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <button type="button" aria-label="إغلاق">×</button>
-    <img src="" alt="صورة مكبرة" />
+    <img src="" alt="صورة مكبرة" loading="lazy" decoding="async" />
   </div>
 
   <div class="letter-modal" id="letterModal" aria-hidden="true">
@@ -329,6 +371,6 @@
 
   <div class="heart-toast" id="heartToast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=20260715-login-3"></script>
+  <script src="script.js?v=20260719-pro-1"></script>
 </body>
 </html>

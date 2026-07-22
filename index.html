@@ -371,6 +371,15 @@
 
   <div class="heart-toast" id="heartToast" role="status" aria-live="polite"></div>
 
-  <script src="script.js?v=20260719-pro-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window.ROCKY_CLOUD = {
+      supabaseUrl: "",
+      supabaseAnonKey: "",
+      bucket: "rocky-memories",
+      table: "memories"
+    };
+  </script>
+  <script src="script.js?v=20260722-cloud-1"></script>
 </body>
 </html>

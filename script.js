@@ -59,6 +59,15 @@ const videoMusicVolume = 0.18;
 let musicResumeTimer;
 const savedMemoryKey = "rockySavedMemories";
 const oldSavedMemoryKey = "rockySavedMemory";
+const cloudConfig = window.ROCKY_CLOUD || {};
+const cloudEnabled = Boolean(
+  window.supabase &&
+  cloudConfig.supabaseUrl &&
+  cloudConfig.supabaseAnonKey
+);
+const cloudClient = cloudEnabled
+  ? window.supabase.createClient(cloudConfig.supabaseUrl, cloudConfig.supabaseAnonKey)
+  : null;
 
 document.body.classList.add("locked");
 
@@ -527,6 +536,67 @@ function saveMemories() {
   localStorage.setItem(savedMemoryKey, JSON.stringify(savedMemories));
 }
 
+function normalizeMemory(memory) {
+  return {
+    id: memory.id || `${memory.createdAt || Date.now()}`,
+    image: memory.image_url || memory.image,
+    imagePath: memory.image_path || memory.imagePath || "",
+    title: memory.title || "ذكرى محفوظة",
+    note: memory.note || "لحظة حلوة اتضافت للموقع.",
+    createdAt: memory.created_at || memory.createdAt || Date.now()
+  };
+}
+
+async function uploadMemoryToCloud(memory) {
+  const filePath = `memories/${Date.now()}-${Math.random().toString(16).slice(2)}.jpg`;
+  const imageBlob = await fetch(memory.image).then((response) => response.blob());
+  const storageResult = await cloudClient
+    .storage
+    .from(cloudConfig.bucket)
+    .upload(filePath, imageBlob, {
+      contentType: "image/jpeg",
+      upsert: false
+    });
+
+  if (storageResult.error) throw storageResult.error;
+
+  const publicImage = cloudClient
+    .storage
+    .from(cloudConfig.bucket)
+    .getPublicUrl(filePath)
+    .data
+    .publicUrl;
+
+  const insertResult = await cloudClient
+    .from(cloudConfig.table)
+    .insert({
+      title: memory.title,
+      note: memory.note,
+      image_url: publicImage,
+      image_path: filePath
+    })
+    .select()
+    .single();
+
+  if (insertResult.error) throw insertResult.error;
+  return normalizeMemory(insertResult.data);
+}
+
+async function deleteMemoryFromCloud(memory) {
+  if (memory.imagePath) {
+    await cloudClient.storage.from(cloudConfig.bucket).remove([memory.imagePath]);
+  }
+  if (memory.id) {
+    const result = await cloudClient.from(cloudConfig.table).delete().eq("id", memory.id);
+    if (result.error) throw result.error;
+  }
+}
+
+async function clearCloudMemories() {
+  const memoriesToDelete = [...savedMemories];
+  await Promise.all(memoriesToDelete.map(deleteMemoryFromCloud));
+}
+
 function drawRoundedRect(ctx, x, y, width, height, radius) {
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
@@ -629,7 +699,7 @@ function renderMemoryWall() {
     const card = document.createElement("article");
     card.className = "wall-memory";
     card.innerHTML = `
-      <img src="${memory.image}" alt="">
+      <img src="${memory.image}" alt="" loading="lazy" decoding="async">
       <div>
         <span>${new Date(memory.createdAt).toLocaleDateString("ar-EG")}</span>
         <h4></h4>
@@ -647,24 +717,45 @@ function renderMemoryWall() {
       event.stopPropagation();
       downloadMemoryCard(memory);
     });
-    qs('[data-action="delete"]', card).addEventListener("click", (event) => {
+    qs('[data-action="delete"]', card).addEventListener("click", async (event) => {
       event.stopPropagation();
-      savedMemories.splice(index, 1);
-      saveMemories();
-      renderMemoryWall();
-      showToast("اتحذفت الذكرى");
+      try {
+        if (cloudEnabled) {
+          await deleteMemoryFromCloud(memory);
+        }
+        savedMemories.splice(index, 1);
+        if (!cloudEnabled) saveMemories();
+        renderMemoryWall();
+        showToast("اتحذفت الذكرى");
+      } catch (error) {
+        showToast("الحذف محتاج اتصال أحسن");
+      }
     });
     memoryWall.appendChild(card);
   });
 }
 
-function loadSavedMemory() {
+async function loadSavedMemory() {
   try {
+    if (cloudEnabled) {
+      const result = await cloudClient
+        .from(cloudConfig.table)
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(24);
+
+      if (result.error) throw result.error;
+      savedMemories = result.data.map(normalizeMemory);
+      if (savedMemories[0]) updateMemoryCard(savedMemories[0]);
+      renderMemoryWall();
+      return;
+    }
+
     const savedList = JSON.parse(localStorage.getItem(savedMemoryKey) || "[]");
     const oldMemory = JSON.parse(localStorage.getItem(oldSavedMemoryKey) || "null");
-    savedMemories = Array.isArray(savedList) ? savedList : [];
+    savedMemories = Array.isArray(savedList) ? savedList.map(normalizeMemory) : [];
     if (!savedMemories.length && oldMemory?.image) {
-      savedMemories = [{ ...oldMemory, createdAt: Date.now() }];
+      savedMemories = [normalizeMemory({ ...oldMemory, createdAt: Date.now() })];
       saveMemories();
       localStorage.removeItem(oldSavedMemoryKey);
     }
@@ -693,7 +784,7 @@ memoryImage.addEventListener("change", () => {
   });
 });
 
-memoryForm.addEventListener("submit", (event) => {
+memoryForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const memory = {
@@ -704,30 +795,40 @@ memoryForm.addEventListener("submit", (event) => {
   };
 
   try {
-    savedMemories.unshift(memory);
-    savedMemories = savedMemories.slice(0, 12);
-    saveMemories();
-    updateMemoryCard(memory);
+    const savedMemory = cloudEnabled ? await uploadMemoryToCloud(memory) : normalizeMemory(memory);
+    savedMemories.unshift(savedMemory);
+    savedMemories = savedMemories.slice(0, cloudEnabled ? 24 : 12);
+    if (!cloudEnabled) saveMemories();
+    updateMemoryCard(savedMemory);
     renderMemoryWall();
     memoryForm.reset();
-    showToast("اتضافت لحائط الذكريات");
+    showToast(cloudEnabled ? "اتحفظت وظهرت لكل الأجهزة" : "اتضافت محليًا لحد ما نوصل السحابة");
   } catch (error) {
     savedMemories.shift();
-    memoryCardNote.textContent = "المساحة مش مكفية، جربي صورة أصغر.";
+    memoryCardNote.textContent = cloudEnabled ? "الحفظ السحابي محتاج مراجعة الإعدادات أو النت." : "المساحة مش مكفية، جربي صورة أصغر.";
   }
 });
 
-clearMemory.addEventListener("click", () => {
-  localStorage.removeItem(savedMemoryKey);
-  savedMemories = [];
-  selectedMemoryImage = "";
-  memoryForm.reset();
-  updateMemoryCard({
-    image: "assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg",
-    title: "ذكرى مستنية صورتك",
-    note: "ارفعي صورة واضغطي حفظ، وهتفضل موجودة هنا كل مرة تفتحي الموقع من نفس الجهاز."
-  });
-  renderMemoryWall();
+clearMemory.addEventListener("click", async () => {
+  try {
+    if (cloudEnabled) {
+      await clearCloudMemories();
+    } else {
+      localStorage.removeItem(savedMemoryKey);
+    }
+    savedMemories = [];
+    selectedMemoryImage = "";
+    memoryForm.reset();
+    updateMemoryCard({
+      image: "assets/images/gallery/WhatsApp Image 2026-07-14 at 2.50.19 PM.jpeg",
+      title: "ذكرى مستنية صورتك",
+      note: "ارفعي صورة واضغطي حفظ، وهتفضل موجودة هنا كل مرة تفتحي الموقع من نفس الجهاز."
+    });
+    renderMemoryWall();
+    showToast("الحائط اتفضى");
+  } catch (error) {
+    showToast("مسح الحائط محتاج اتصال أحسن");
+  }
 });
 
 loadSavedMemory();

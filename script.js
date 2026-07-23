@@ -69,7 +69,8 @@ const cloudClient = cloudEnabled
   ? window.supabase.createClient(cloudConfig.supabaseUrl, cloudConfig.supabaseAnonKey)
   : null;
 
-document.body.classList.add("locked");
+lockScreen.classList.add("hide");
+document.body.classList.remove("locked");
 
 function updateLockTime() {
   const now = new Date();
@@ -83,10 +84,12 @@ updateLockTime();
 window.setInterval(updateLockTime, 30000);
 
 function hidePreloader() {
+  loadProgress.style.width = "100%";
+  loadText.textContent = "100%";
   preloader.classList.add("hide");
 }
 
-window.setTimeout(hidePreloader, 4200);
+window.setTimeout(hidePreloader, 900);
 
 function fetchWithTimeout(src, timeout = 1800) {
   const controller = new AbortController();
@@ -97,42 +100,7 @@ function fetchWithTimeout(src, timeout = 1800) {
 }
 
 function preloadAssets() {
-  const media = [
-    ...qsa(".lock-phone img, .hero-media img").map((item) => item.currentSrc || item.src)
-  ].filter(Boolean);
-
-  const uniqueMedia = [...new Set(media)];
-  let loaded = 0;
-
-  const markLoaded = () => {
-    loaded += 1;
-    const percent = Math.round((loaded / Math.max(1, uniqueMedia.length)) * 100);
-    loadProgress.style.width = `${percent}%`;
-    loadText.textContent = `${percent}%`;
-    if (loaded >= uniqueMedia.length) {
-      window.setTimeout(() => preloader.classList.add("hide"), 450);
-    }
-  };
-
-  if (!uniqueMedia.length) {
-    markLoaded();
-    return;
-  }
-
-  uniqueMedia.forEach((src) => {
-    const isVideo = /\.(mp4|mov|webm)(\?|$)/i.test(src);
-    const isAudio = /\.(mp3|wav|m4a)(\?|$)/i.test(src);
-
-    if (isVideo || isAudio) {
-      fetchWithTimeout(src).then(markLoaded).catch(markLoaded);
-      return;
-    }
-
-    const img = new Image();
-    img.onload = markLoaded;
-    img.onerror = markLoaded;
-    img.src = src;
-  });
+  window.setTimeout(hidePreloader, 450);
 }
 
 window.addEventListener("load", preloadAssets);

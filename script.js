@@ -82,10 +82,23 @@ function updateLockTime() {
 updateLockTime();
 window.setInterval(updateLockTime, 30000);
 
+function hidePreloader() {
+  preloader.classList.add("hide");
+}
+
+window.setTimeout(hidePreloader, 4200);
+
+function fetchWithTimeout(src, timeout = 1800) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), timeout);
+  return fetch(src, { method: "HEAD", signal: controller.signal }).finally(() => {
+    window.clearTimeout(timer);
+  });
+}
+
 function preloadAssets() {
   const media = [
-    ...qsa(".lock-phone img, .hero-media img").map((item) => item.currentSrc || item.src),
-    music.currentSrc || qs("source", music)?.src
+    ...qsa(".lock-phone img, .hero-media img").map((item) => item.currentSrc || item.src)
   ].filter(Boolean);
 
   const uniqueMedia = [...new Set(media)];
@@ -111,7 +124,7 @@ function preloadAssets() {
     const isAudio = /\.(mp3|wav|m4a)(\?|$)/i.test(src);
 
     if (isVideo || isAudio) {
-      fetch(src, { method: "HEAD" }).then(markLoaded).catch(markLoaded);
+      fetchWithTimeout(src).then(markLoaded).catch(markLoaded);
       return;
     }
 
@@ -738,11 +751,15 @@ function renderMemoryWall() {
 async function loadSavedMemory() {
   try {
     if (cloudEnabled) {
-      const result = await cloudClient
-        .from(cloudConfig.table)
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(24);
+      const cloudLoad = cloudClient
+          .from(cloudConfig.table)
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(24);
+      const timeoutLoad = new Promise((_, reject) => {
+        window.setTimeout(() => reject(new Error("Cloud memories timed out")), 3500);
+      });
+      const result = await Promise.race([cloudLoad, timeoutLoad]);
 
       if (result.error) throw result.error;
       savedMemories = result.data.map(normalizeMemory);
@@ -763,6 +780,7 @@ async function loadSavedMemory() {
     renderMemoryWall();
   } catch (error) {
     localStorage.removeItem(savedMemoryKey);
+    savedMemories = [];
     renderMemoryWall();
   }
 }
